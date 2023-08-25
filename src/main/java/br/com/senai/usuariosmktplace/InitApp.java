@@ -7,7 +7,7 @@ public class InitApp {
 	public static void main(String[] args) {
 
 	UsuarioService service = new UsuarioService();
-	service.criarPor("João Vitor Romania Balbino", "pipipipo123");
+	service.validar("João Vitor Romania Balbino", "pipipipo123");
    }
 
 }
