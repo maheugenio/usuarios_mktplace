@@ -69,6 +69,10 @@ public class UsuarioService {
 				loginGerado = partesDoNome.get(0) + "." + partesDoNome.get(i);
 				usuarioEncontrado = dao.buscarPor(loginGerado);
 				if (usuarioEncontrado == null) {
+					if(loginGerado.length() > 50) {
+						loginGerado = loginGerado.substring(0, 50);
+						
+					}
 					return loginGerado;
 				}
 			}
