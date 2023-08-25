@@ -108,14 +108,15 @@ public class UsuarioService {
 	}
 	
 	public void validar(String nomeCompleto, String senha) {
-		List<String> partesDoNome = fracionar(nomeCompleto);
-		boolean isNomeCompleto = partesDoNome.size() > 1;
-		boolean isNomeValido = !Strings.isNullOrEmpty(nomeCompleto) && isNomeCompleto && 
-							 nomeCompleto.length() >= 5 && nomeCompleto.length() <= 120;
-	Preconditions.checkArgument(isNomeValido, "O nome é obrigatório e deve conter entre 5 "
-											+ "e 120 caracteres e conter sobrenome também.");
-	this.validar(senha);
-	}
+	       List<String> partesDoNome = fracionar(nomeCompleto);
+	       boolean isNomeCompleto = partesDoNome.size() > 1;
+	       boolean isNomeValido = !Strings.isNullOrEmpty(nomeCompleto) && isNomeCompleto
+	               && nomeCompleto.length() >= 5 && nomeCompleto.length() <= 120;
+	       Preconditions.checkArgument(isNomeValido, "O nome é obrigatório e deve conter "
+	               + "entre 5 e 120 caracteres e conter sobrenome também");
+	       this.validar(senha);
+	   }
+
 	
 }
 
