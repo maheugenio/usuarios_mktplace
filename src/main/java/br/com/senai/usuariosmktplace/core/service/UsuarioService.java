@@ -33,6 +33,41 @@ public class UsuarioService {
 		return usuarioSalvo;
 	}
 	
+	public Usuario atualizarPor(String login, String nomeCompleto, 
+						     String senhaAntiga, String senhaNova) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(login), 
+						"O login é obrigatório para atualização");
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(senhaAntiga), 
+					  "A senha antiga é orbigatória para atualização.");
+		
+		this.validar(nomeCompleto, senhaNova);
+		
+		Usuario usuarioSalvo = dao.buscarPor(login);
+		
+		Preconditions.checkNotNull(usuarioSalvo, "Não foi encontrado usuário "
+											 + "vinculado ao login informado.");
+		
+		String senhaAntigaCriptografada = gerarHashDa(senhaAntiga);
+		
+		boolean isSenhaValida = senhaAntigaCriptografada.equals(usuarioSalvo.getSenha());
+		
+		Preconditions.checkArgument(isSenhaValida, "A senha antiga não confere.");
+		
+		Preconditions.checkArgument(!senhaAntiga.equals(senhaNova), "A senha nova não "
+												   + "pode ser igual a senha anterior.");
+	
+		String senhaNovaCriptografada = gerarHashDa(senhaNova);
+		
+		Usuario usuarioAlterado = new Usuario(login, senhaNovaCriptografada, nomeCompleto);
+	
+		this.dao.alterar(usuarioAlterado);
+		
+		usuarioAlterado = dao.buscarPor(login);
+		
+		return usuarioAlterado;
+		
+	}
+	
 	private String removerAcentoDo(String nomeCompleto) {
 		return Normalizer.normalize(nomeCompleto,
 		Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
