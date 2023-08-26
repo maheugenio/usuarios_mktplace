@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.codec.digest.MessageDigestAlgorithms;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Preconditions;
@@ -14,13 +16,19 @@ import com.google.common.base.Strings;
 import br.com.senai.usuariosmktplace.core.dao.DaoUsuario;
 import br.com.senai.usuariosmktplace.core.dao.FactoryDao;
 import br.com.senai.usuariosmktplace.core.domain.Usuario;
+import jakarta.annotation.PostConstruct;
 
+@Service
 public class UsuarioService {
 
+	@Autowired
+	private FactoryDao factoryDao;
+	
 	private DaoUsuario dao;
 	
-	public UsuarioService() {
-		this.dao = FactoryDao.getInstance().getDaoUsuario();
+	@PostConstruct
+	public void inicializar() {
+		this.dao = factoryDao.getDaoUsuario();
 	}
 
 	public Usuario criarPor(String nomeCompleto, String senha) {
@@ -66,6 +74,14 @@ public class UsuarioService {
 		
 		return usuarioAlterado;
 		
+	}
+	
+	public Usuario buscarPor(String login) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(login), "O login é obrigatório.");
+		Usuario usuarioEncontrado = dao.buscarPor(login);
+		Preconditions.checkNotNull(usuarioEncontrado, "Não foi encontrado usuário "
+												  + "vinculado ao login informado.");
+		return usuarioEncontrado;
 	}
 	
 	private String removerAcentoDo(String nomeCompleto) {
@@ -127,20 +143,22 @@ public class UsuarioService {
 	} 
 	
 	@SuppressWarnings("deprecation")
-	private void validar(String senha) {
-		boolean isSenhaValida = !Strings.isNullOrEmpty(senha)
-				&& senha.length() >= 6 || senha.length() <= 15;
-		Preconditions.checkArgument(isSenhaValida, "A senha é obrigatória e"
-									   + " deve conter entre 6 e 15 caracteres.");
+	   private void validar(String senha) {
+	       
+	       boolean isSenhaValida = !Strings.isNullOrEmpty(senha)
+	               && senha.length() >= 6 && senha.length() <= 15;
+	               
+	       Preconditions.checkArgument(isSenhaValida, "A senha é obrigatória "
+	               + "deve conter entre 6 e 15 caracteres");
+	   
+	       boolean isContemLetra = CharMatcher.inRange('a', 'z').countIn(senha.toLowerCase()) > 0;
+	       boolean isContemNumero = CharMatcher.inRange('0', '9').countIn(senha) > 0;
+	       boolean isCaracterInvalido = !CharMatcher.javaLetterOrDigit().matchesAllOf(senha);
+	   
+	       Preconditions.checkArgument(isContemLetra && isContemNumero && !isCaracterInvalido,
+	               "A senha deve conter letras e numeros");    
+	   }
 
-		boolean isContemLetra = CharMatcher.inRange('a', 'z').countIn(senha.toLowerCase()) > 0;
-		boolean isContemNumero = CharMatcher.inRange('0', '9').countIn(senha) > 0;
-		boolean isCaracterInvalido = !CharMatcher.javaLetterOrDigit().matchesAllOf(senha);
-		
-		Preconditions.checkArgument(isContemLetra && isContemNumero && !isCaracterInvalido,
-				                  				 "A senha deve conter letras e números.");
-		
-	}
 	
 	public void validar(String nomeCompleto, String senha) {
 	       List<String> partesDoNome = fracionar(nomeCompleto);

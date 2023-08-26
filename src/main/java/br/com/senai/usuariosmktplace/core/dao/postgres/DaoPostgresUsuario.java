@@ -4,10 +4,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import org.springframework.stereotype.Component;
+
 import br.com.senai.usuariosmktplace.core.dao.DaoUsuario;
 import br.com.senai.usuariosmktplace.core.dao.ManagerDb;
 import br.com.senai.usuariosmktplace.core.domain.Usuario;
 
+@Component
 public class DaoPostgresUsuario implements DaoUsuario {
 
 	private final String INSERT = "INSERT INTO usuarios (login, nome, senha) "

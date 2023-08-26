@@ -6,6 +6,11 @@
 	<artifactId>usuarios_mktplace</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<dependencies>
+	    <dependency>
+	        <groupId>org.springframework.boot</groupId>
+	        <artifactId>spring-boot-starter</artifactId>
+	        <version>3.1.2</version>
+	    </dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
